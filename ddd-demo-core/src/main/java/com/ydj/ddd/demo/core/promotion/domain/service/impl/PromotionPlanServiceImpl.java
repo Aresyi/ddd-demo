@@ -1,12 +1,11 @@
 package com.ydj.ddd.demo.core.promotion.domain.service.impl;
 
+import com.ydj.ddd.demo.core.promotion.domain.factory.PromotionAdAggregateFactory;
 import com.ydj.ddd.demo.core.promotion.domain.model.BroadcastPromotionPlan;
 import com.ydj.ddd.demo.core.promotion.domain.model.PromotionAdAggregate;
 import com.ydj.ddd.demo.core.promotion.domain.model.TrafficPromotionPlan;
+import com.ydj.ddd.demo.core.promotion.domain.repo.PromotionAdSaveOrUpdateRepo;
 import com.ydj.ddd.demo.core.promotion.domain.service.PromotionPlanService;
-import com.ydj.ddd.demo.core.promotion.domain.factory.PromotionAdAggregateFactory;
-import com.ydj.ddd.demo.core.promotion.infrastructure.repository.PromotionAdManageRepo;
-import com.ydj.ddd.demo.core.promotion.infrastructure.repository.PromotionAdSaveOrUpdateRepo;
 import com.ydj.ddd.demo.core.promotion.infrastructure.repository.assembler.PromotionAdDataProcessResult;
 import com.ydj.ddd.demo.core.promotion.infrastructure.repository.assembler.PromotionAdDataWrapper;
 import org.apache.commons.collections4.CollectionUtils;
@@ -26,9 +25,6 @@ public class PromotionPlanServiceImpl implements PromotionPlanService {
 
     @Resource
     private PromotionAdSaveOrUpdateRepo promotionAdSaveOrUpdateRepo;
-
-    @Resource
-    private PromotionAdManageRepo promotionAdManageRepo;
 
     @Resource
     private ProfitShareUpdateService profitShareUpdateService;
@@ -110,7 +106,7 @@ public class PromotionPlanServiceImpl implements PromotionPlanService {
 
     @Override
     public Boolean deletePromotionPlan(long userId,long promotionPlanId) {
-        boolean isDelete = this.promotionAdManageRepo.deletePromotionPlan(promotionPlanId);
+        boolean isDelete = this.promotionAdSaveOrUpdateRepo.deletePromotionPlan(promotionPlanId);
         if (isDelete){
             List<Long> anchors = anchorSelectedItemQueryService.getAnchors4SelectedThisPlan(promotionPlanId);
             this.webcastSyncService.syncDataToWebcastBatch(anchors);

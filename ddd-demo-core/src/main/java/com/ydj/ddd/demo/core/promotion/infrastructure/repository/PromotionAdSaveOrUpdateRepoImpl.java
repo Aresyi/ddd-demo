@@ -1,7 +1,10 @@
 package com.ydj.ddd.demo.core.promotion.infrastructure.repository;
 
-import com.jd.b.promotion.infrastructure.repository.assembler.PromotionAdDataProcessResult;
-import com.jd.b.promotion.infrastructure.repository.assembler.PromotionAdDataWrapper;
+import com.ydj.ddd.demo.core.promotion.domain.repo.PromotionAdSaveOrUpdateRepo;
+import com.ydj.ddd.demo.core.promotion.exception.BusinessException;
+import com.ydj.ddd.demo.core.promotion.exception.ExceptionCodeEnum;
+import com.ydj.ddd.demo.core.promotion.infrastructure.repository.assembler.PromotionAdDataProcessResult;
+import com.ydj.ddd.demo.core.promotion.infrastructure.repository.assembler.PromotionAdDataWrapper;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +18,9 @@ import java.util.Objects;
 ;
 
 @Repository
-public class PromotionAdSaveOrUpdateRepo {
+public class PromotionAdSaveOrUpdateRepoImpl implements PromotionAdSaveOrUpdateRepo {
     
-    private static final Logger LOGGER = LoggerFactory.getLogger(PromotionAdSaveOrUpdateRepo.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PromotionAdSaveOrUpdateRepoImpl.class);
 
     @Resource
     private AdMapper adMapper;
@@ -56,6 +59,7 @@ public class PromotionAdSaveOrUpdateRepo {
     private TargettingKeywordsMapper targettingKeywordsMapper;
 
     @Transactional
+    @Override
     public PromotionAdDataProcessResult savePromotionAd(PromotionAdDataWrapper promotionAdDataWrapper){
         LOGGER.info("savePromotionAd()->promotionAdDataWrapper = {}", promotionAdDataWrapper);
 
@@ -81,6 +85,7 @@ public class PromotionAdSaveOrUpdateRepo {
     }
 
     @Transactional
+    @Override
     public PromotionAdDataProcessResult updatePromotionAd(PromotionAdDataWrapper promotionAdDataWrapper){
         LOGGER.info("updatePromotionAd()->promotionAdDataWrapper = {}", promotionAdDataWrapper);
 
@@ -123,6 +128,23 @@ public class PromotionAdSaveOrUpdateRepo {
         }
 
         return promotionAdDataProcessResult;
+    }
+
+    /**
+     * 软删除某条推广计划，同时修改推广计划状态为终止或下架
+     *
+     * @param promotionPlanId
+     * @return
+     */
+    @Override
+    public boolean deletePromotionPlan(long promotionPlanId){
+        LOGGER.info("deletePromotionPlan()->promotionPlanId = {}",promotionPlanId);
+        int res = planMapper.deletePlan(promotionPlanId);
+        boolean isDelete =  res > 0 ? true : false;
+        if (isDelete){//简单直接下架直播推广，不管promotionPlanId是直播推广还是流量推广
+            planItemMapper.offline(promotionPlanId);
+        }
+        return isDelete;
     }
 
     private void addNewTrafficPromotion(PromotionAdDataWrapper.TrafficPromotionData one, Ad ad,
