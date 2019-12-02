@@ -2,7 +2,7 @@ package com.ydj.ddd.demo.core.promotion.interfaces.rpcapi;
 
 
 import com.ydj.ddd.demo.api.promotion.PromotionPlanApiService;
-import com.ydj.ddd.demo.api.promotion.dto.MerchantPromotionRequestDTO;
+import com.ydj.ddd.demo.api.promotion.dto.CreatePromotionDTO;
 import com.ydj.ddd.demo.core.promotion.domain.service.PromotionPlanService;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ public class PromotionPlanApiImpl implements PromotionPlanApiService,ApiResultHa
 
 
     @Override
-    public boolean createPromotionPlan(long userId, MerchantPromotionRequestDTO merchantPromotionRequest) {
+    public boolean createPromotionPlan(long userId, CreatePromotionDTO merchantPromotionRequest) {
         if (userId <= 0 || merchantPromotionRequest == null) {
             DubboExtProperty.setErrorCode(AdReturnCode.INVALID_PARAMETER);
             return  false;
@@ -33,7 +33,7 @@ public class PromotionPlanApiImpl implements PromotionPlanApiService,ApiResultHa
     }
 
     @Override
-    public boolean updatePromotionPlan(long userId, MerchantPromotionRequestDTO merchantPromotionRequest) {
+    public boolean updatePromotionPlan(long userId, CreatePromotionDTO merchantPromotionRequest) {
         if (userId <= 0 || merchantPromotionRequest == null) {
             DubboExtProperty.setErrorCode(AdReturnCode.INVALID_PARAMETER);
             return  false;
