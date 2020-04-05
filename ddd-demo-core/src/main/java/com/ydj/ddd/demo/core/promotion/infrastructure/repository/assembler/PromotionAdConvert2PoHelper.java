@@ -33,7 +33,7 @@ public class PromotionAdConvert2PoHelper {
 
     public PromotionAdDataWrapper convert2PoData() {
 
-        PromotionAdDataWrapper promotionAdDataWrapper = new com.jd.b.promotion.infrastructure.repository.assembler.PromotionAdDataWrapper();
+        PromotionAdDataWrapper promotionAdDataWrapper = new PromotionAdDataWrapper();
         promotionAdDataWrapper.setAd(this.convert2Ad());
         promotionAdDataWrapper.setPromotionProduct(this.convert2PromotionProduct());
 
